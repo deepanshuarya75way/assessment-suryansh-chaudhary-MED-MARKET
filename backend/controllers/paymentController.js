@@ -23,7 +23,7 @@ export const createRazorpayOrder = async (req, res) => {
     if (!razorpay) return res.status(500).json({ message: 'Online payments are not configured on the server yet.' });
 
     const { storeId, items, deliveryAddress, prescriptionImage, useWallet } = req.body;
-    const { verifiedItems, totalAmount, walletUsed, payableAmount } = await verifyCartItems(
+    const { verifiedItems, totalAmount, walletUsed, payableAmount, areaDiscount } = await verifyCartItems(
       storeId, items, deliveryAddress, prescriptionImage, req.user._id, useWallet
     );
 
@@ -44,6 +44,7 @@ export const createRazorpayOrder = async (req, res) => {
       prescriptionImage: prescriptionImage || null,
       items: verifiedItems,
       totalAmount,
+      areaDiscount,
       walletUsed,
       createdAt: Date.now()
     });
@@ -99,6 +100,7 @@ export const verifyRazorpayPayment = async (req, res) => {
       prescriptionImage: pending.prescriptionImage,
       items: pending.items,
       totalAmount: pending.totalAmount,
+      areaDiscount: pending.areaDiscount || 0,
       walletUsed: pending.walletUsed,
       status: 'Pending',
       paymentMethod: 'Online',

@@ -15,6 +15,7 @@ const CartPage = () => {
   const [step, setStep] = useState('cart');
   const [loading, setLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [areaDiscount, setAreaDiscount]=useState(0);
   const [prescription, setPrescription] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('cod');
@@ -34,7 +35,14 @@ const CartPage = () => {
 
   const itemTotal = cart.reduce((acc, i) => acc + (i.price * i.quantity), 0);
   const deliveryFee = itemTotal > 500 ? 0 : 40;
-  const totalAmount = itemTotal + deliveryFee;
+  const totalAmount = itemTotal - areaDiscount + deliveryFee;
+  useEffect(() => {
+    const pincode=selectedAddress?.pincode;
+    if(!pincode) {setAreaDiscount(0); return;}
+    API.get(`/area-discounts/check/${pincode}?amount=${itemTotal}`)
+    .then(({data}) => setAreaDiscount(data.discountAmount))
+    .catch(() => setAreaDiscount(0));
+  }, [selectedAddress,itemTotal]);
 
   const walletDeduction = useWallet ? Math.min(walletBalance, totalAmount) : 0;
   const payableAmount = totalAmount - walletDeduction;
@@ -277,6 +285,7 @@ const CartPage = () => {
             <div className="space-y-3 text-sm font-medium text-slate-600 mb-6">
               <div className="flex justify-between"><span>{t('itemTotal')}</span><span>₹{itemTotal}</span></div>
               <div className="flex justify-between"><span>{t('deliveryFee')}</span><span className="text-emerald-600 font-bold">{deliveryFee === 0 ? t('free') : `₹${deliveryFee}`}</span></div>
+              {areaDiscount > 0 && (<div className="flex justify-between text-emerald-600"><span>Area Discount</span><span>-${areaDiscount}</span></div>)}
               {step === 'checkout' && walletDeduction > 0 && (
                 <div className="flex justify-between text-emerald-600"><span className="flex items-center gap-1"><Wallet size={14}/> Wallet Applied</span><span>-₹{walletDeduction}</span></div>
               )}

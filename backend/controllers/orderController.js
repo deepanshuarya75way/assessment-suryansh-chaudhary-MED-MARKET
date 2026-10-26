@@ -4,6 +4,7 @@ import Inventory from '../models/Inventory.js';
 import Medicine from '../models/Medicine.js';
 import User from '../models/User.js';
 import { creditWallet, debitWallet } from './walletController.js';
+import { calculateAreaDiscount} from './areaDiscountController.js'
 
 export const isValidAddress = (address) => {
   if (!address || address.trim().length < 15) return false;
@@ -33,7 +34,9 @@ export const verifyCartItems = async (storeId, items, deliveryAddress, prescript
 
   const itemTotal = verifiedItems.reduce((sum, i) => sum + (i.price * i.quantity), 0);
   const deliveryFee = itemTotal > 500 ? 0 : 40;
+  const areaDiscount = await calculateAreaDiscount(deliveryAddress,itemTotal);
   const totalAmount = itemTotal + deliveryFee;
+
 
   let walletUsed = 0;
   if (useWallet && userId) {
@@ -43,13 +46,13 @@ export const verifyCartItems = async (storeId, items, deliveryAddress, prescript
   }
   const payableAmount = totalAmount - walletUsed;
 
-  return { verifiedItems, totalAmount, walletUsed, payableAmount };
+  return { verifiedItems, totalAmount, walletUsed, payableAmount, areaDiscount };
 };
 
 export const placeOrder = async (req, res) => {
   try {
     const { storeId, items, deliveryAddress, prescriptionImage, useWallet } = req.body;
-    const { verifiedItems, totalAmount, walletUsed } = await verifyCartItems(
+    const { verifiedItems, totalAmount, walletUsed, areaDiscount } = await verifyCartItems(
       storeId, items, deliveryAddress, prescriptionImage, req.user._id, useWallet
     );
 
