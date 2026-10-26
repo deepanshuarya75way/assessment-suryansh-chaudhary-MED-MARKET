@@ -285,7 +285,7 @@ const CartPage = () => {
             <div className="space-y-3 text-sm font-medium text-slate-600 mb-6">
               <div className="flex justify-between"><span>{t('itemTotal')}</span><span>₹{itemTotal}</span></div>
               <div className="flex justify-between"><span>{t('deliveryFee')}</span><span className="text-emerald-600 font-bold">{deliveryFee === 0 ? t('free') : `₹${deliveryFee}`}</span></div>
-              {areaDiscount > 0 && (<div className="flex justify-between text-emerald-600"><span>Area Discount</span><span>-${areaDiscount}</span></div>)}
+              {areaDiscount > 0 && (<div className="flex justify-between text-emerald-600"><span>Area Discount</span><span>-₹{areaDiscount}</span></div>)}
               {step === 'checkout' && walletDeduction > 0 && (
                 <div className="flex justify-between text-emerald-600"><span className="flex items-center gap-1"><Wallet size={14}/> Wallet Applied</span><span>-₹{walletDeduction}</span></div>
               )}
