@@ -14,6 +14,7 @@ export default function AreaDiscountManager(){
     <div className="bg-white p-4 rounded">
       <input placeholder="pincode" onChange={e =>setForm({ ... form,pincode:e.target.value})} className="border p-2" />
       <input placeholder="percent" onChange={e =>setForm({ ... form,percent:e.target.value})} className="border p-2" />
+      <button onClick={add} className="bg-green-600 text-white px-3 py-2">Add</button>
       {list.map(d =>(
         <p key={d._id}>{d.pincode} - {d.percent}% <button onClick={() => API.delete(`/area-discounts/${d._id}`).then(load)} className="text-red-600">Delete</button></p>
       
