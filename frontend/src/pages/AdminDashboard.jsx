@@ -1,3 +1,4 @@
+import AreaDiscountManager from '../components/AreaDiscountManager';
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -187,12 +188,13 @@ const AdminDashboard = () => {
         <div className="flex gap-3 mb-6 bg-slate-200/50 p-1.5 rounded-xl w-fit overflow-x-auto">
           <button onClick={() => setActiveTab('vendors')} className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 shrink-0 ${activeTab === 'vendors' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}><Store className="w-4 h-4" /> Pharmacies</button>
           <button onClick={() => setActiveTab('customers')} className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 shrink-0 ${activeTab === 'customers' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}><Users className="w-4 h-4" /> Customers</button>
+          <button onClick={() => setActiveTab('discounts')}>Discounts</button>
           <button onClick={() => setActiveTab('reports')} className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 shrink-0 ${activeTab === 'reports' ? 'bg-rose-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
             <AlertOctagon className="w-4 h-4"/> Complaints
             {pendingReports > 0 && <span className={`px-1.5 rounded-full text-[10px] ${activeTab === 'reports' ? 'bg-white text-rose-600' : 'bg-rose-500 text-white'}`}>{pendingReports}</span>}
           </button>
         </div>
-
+        {activeTab ==='discounts' && <AreaDiscountManager />}
         {/* 🚀 TAB 1: VENDORS */}
         {activeTab === 'vendors' && (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
